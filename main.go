@@ -56,6 +56,15 @@ func checkExtension(filename string) bool {
 
 // readMusicDir 获取音乐文件夹指定路径的目录和音频文件列表
 func readMusicDir(folder string) (musicList []MusicListElement, subFolderList []string) {
+	// 初始化空 slice
+	musicList = make([]MusicListElement, 0, 10)
+	subFolderList = make([]string, 0, 10)
+
+	// 请求时提交 null 字符串则视为空字符串
+	if folder == "null" {
+		folder = ""
+	}
+
 	// 获取文件列表
 	fileList, err := ioutil.ReadDir(path.Join(currentDir, "music", folder))
 	if err != nil {
@@ -99,13 +108,7 @@ func api(writer http.ResponseWriter, request *http.Request) {
 		switch request.Form.Get("do") {
 		case "getfilelist":
 			folder := request.Form.Get("folder")
-			var musicList []MusicListElement
-			var subFolderList []string
-			if folder == "" || folder == "null" {
-				musicList, subFolderList = readMusicDir("")
-			} else {
-				musicList, subFolderList = readMusicDir(folder)
-			}
+			musicList, subFolderList := readMusicDir(folder)
 			response, _ := json.Marshal(NewFileListResponse(musicList, subFolderList))
 			io.WriteString(writer, string(response))
 		default:
