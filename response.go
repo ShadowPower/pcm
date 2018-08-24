@@ -7,7 +7,7 @@ type ErrorResponse struct {
 
 type MusicListElement struct {
 	FileName     string `json:"fileName"`
-	FileSize     int64    `json:"fileSize"`
+	FileSize     int64  `json:"fileSize"`
 	ModifiedTime string `json:"modifiedTime"`
 }
 

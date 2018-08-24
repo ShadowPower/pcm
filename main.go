@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -9,9 +12,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"encoding/json"
-	"io"
-	"io/ioutil"
 )
 
 // 声明程序启动参数变量（全局）
@@ -74,16 +74,16 @@ func readMusicDir(folder string) (musicList []MusicListElement, subFolderList []
 	for _, file := range fileList {
 		if file.IsDir() {
 			// 如果是目录，直接添加到 subFolderList
-			subFolderList = append(subFolderList, folder + file.Name())
+			subFolderList = append(subFolderList, folder+file.Name())
 		} else {
 			fileFullPath := path.Join(currentDir, "music", folder, file.Name())
 			// 如果是文件，先检查扩展名
 			if checkExtension(fileFullPath) {
 				// 将文件信息添加到 musicList
 				fileInfo, _ := os.Stat(fileFullPath)
-				musicList = append(musicList, MusicListElement {
-					FileName: file.Name(),
-					FileSize: fileInfo.Size(),
+				musicList = append(musicList, MusicListElement{
+					FileName:     file.Name(),
+					FileSize:     fileInfo.Size(),
 					ModifiedTime: strconv.FormatInt(fileInfo.ModTime().Unix(), 10),
 				})
 			}
