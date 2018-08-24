@@ -13,3 +13,7 @@
 
 # JetBrains
 .idea/
+
+# Other
+music/
+!music/.gitkeep

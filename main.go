@@ -55,7 +55,7 @@ func checkExtension(filename string) bool {
 }
 
 // readMusicDir 获取音乐文件夹指定路径的目录和音频文件列表
-func readMusicDir(folder string) (musicList []MusicListElement, subFloderList []string) {
+func readMusicDir(folder string) (musicList []MusicListElement, subFolderList []string) {
 	// 获取文件列表
 	fileList, err := ioutil.ReadDir(path.Join(currentDir, "music", folder))
 	if err != nil {
@@ -64,8 +64,8 @@ func readMusicDir(folder string) (musicList []MusicListElement, subFloderList []
 	// 分离目录和文件
 	for _, file := range fileList {
 		if file.IsDir() {
-			// 如果是目录，直接添加到 subFloderList
-			subFloderList = append(subFloderList, folder + "/" + file.Name())
+			// 如果是目录，直接添加到 subFolderList
+			subFolderList = append(subFolderList, folder + file.Name())
 		} else {
 			fileFullPath := path.Join(currentDir, "music", folder, file.Name())
 			// 如果是文件，先检查扩展名
@@ -100,13 +100,13 @@ func api(writer http.ResponseWriter, request *http.Request) {
 		case "getfilelist":
 			folder := request.Form.Get("folder")
 			var musicList []MusicListElement
-			var subFloderList []string
+			var subFolderList []string
 			if folder == "" || folder == "null" {
-				musicList, subFloderList = readMusicDir("")
+				musicList, subFolderList = readMusicDir("")
 			} else {
-				musicList, subFloderList = readMusicDir(folder)
+				musicList, subFolderList = readMusicDir(folder)
 			}
-			response, _ := json.Marshal(NewFileListResponse(musicList, subFloderList))
+			response, _ := json.Marshal(NewFileListResponse(musicList, subFolderList))
 			io.WriteString(writer, string(response))
 		default:
 			response, _ := json.Marshal(NewErrorResponse(400, "unsupported operation"))
