@@ -45,7 +45,7 @@ func isFileExist(path string) bool {
 // checkExtension 检查媒体文件扩展名是否受支持
 func checkExtension(filename string) bool {
 	ext := path.Ext(filename)
-	supported := []string{".mp3", ".ogg", ".m4a", ".aac", ".wav"}
+	supported := []string{".mp3", ".ogg", ".m4a", ".aac", ".wav", ".opus", ".flac"}
 	for _, value := range supported {
 		if strings.EqualFold(ext, value) {
 			return true
@@ -74,7 +74,7 @@ func readMusicDir(folder string) (musicList []MusicListElement, subFolderList []
 	for _, file := range fileList {
 		if file.IsDir() {
 			// 如果是目录，直接添加到 subFolderList
-			subFolderList = append(subFolderList, folder+file.Name())
+			subFolderList = append(subFolderList, strings.Replace(folder+file.Name(), "%", "%25", -1))
 		} else {
 			fileFullPath := path.Join(currentDir, "music", folder, file.Name())
 			// 如果是文件，先检查扩展名
@@ -82,7 +82,7 @@ func readMusicDir(folder string) (musicList []MusicListElement, subFolderList []
 				// 将文件信息添加到 musicList
 				fileInfo, _ := os.Stat(fileFullPath)
 				musicList = append(musicList, MusicListElement{
-					FileName:     file.Name(),
+					FileName:     strings.Replace(file.Name(), "%", "%25", -1),
 					FileSize:     fileInfo.Size(),
 					ModifiedTime: strconv.FormatInt(fileInfo.ModTime().Unix(), 10),
 				})
